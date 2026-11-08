@@ -1,0 +1,13 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {decide} from './refill.mjs';
+const row={key:'test-only',channelId:'synthetic-test-channel',caption:'Synthetic fixture - automated tests only',dueAt:'2026-12-10T16:00:00Z',slideCount:6};
+const draft={id:'synthetic-test-draft',channelId:row.channelId,text:row.caption,status:'draft',dueAt:null,assets:Array.from({length:6},(_,i)=>({id:'test-'+i,source:'https://example.invalid/test-only'}))};const now=Date.parse('2026-11-08T00:00:00Z');
+test('full free queue reserves no additional dates',()=>{const full=Array.from({length:10},(_,i)=>({...draft,id:'test-'+i,text:'Other synthetic test post',status:'scheduled',dueAt:'2026-11-10T16:00:00Z'}));assert.equal(decide([row],[draft,...full],now).actions.length,0)});
+test('an accepted request whose response was lost is reconciled without a duplicate',()=>{assert.equal(decide([row],[{...draft,status:'scheduled',dueAt:row.dueAt}],now).actions.length,0)});
+test('provider error is never auto-retried',()=>{let d=decide([row],[{...draft,status:'error',dueAt:row.dueAt}],now);assert.equal(d.actions.length,0);assert.match(d.errors[0],/native profile/)});
+test('duplicate draft matches stop the affected post',()=>{assert.equal(decide([row],[draft,{...draft,id:'test-duplicate'}],now).actions.length,0)});
+test('wrong media count stops scheduling',()=>{assert.equal(decide([row],[{...draft,assets:[]}],now).actions.length,0)});
+test('another post at the intended date blocks scheduling',()=>{assert.equal(decide([row],[draft,{...draft,id:'test-other',text:'Other fixture',status:'scheduled',dueAt:row.dueAt}],now).actions.length,0)});
+test('past dates are never published as catch-up posts',()=>{assert.equal(decide([row],[draft],Date.parse('2027-01-01')).actions.length,0)});
+test('a verified existing draft can enter an available slot at its exact planned time',()=>{assert.equal(decide([row],[draft],now).actions.length,1)});
+test('a draft copy beside an already scheduled post never creates a second scheduled copy',()=>{let d=decide([row],[draft,{...draft,id:'synthetic-accepted',status:'scheduled',dueAt:row.dueAt}],now);assert.equal(d.actions.length,0)});
+test('BOM and editor whitespace do not turn an existing accepted post into missing content',()=>{let d=decide([row],[{...draft,text:'\uFEFF'+row.caption.replace(/ /g,'\n\n'),status:'scheduled',dueAt:row.dueAt}],now);assert.equal(d.actions.length,0);assert.deepEqual(d.errors,[])});
