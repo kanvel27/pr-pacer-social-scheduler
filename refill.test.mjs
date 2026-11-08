@@ -1,4 +1,4 @@
-import {test} from 'node:test';import assert from 'node:assert/strict';import {decide} from './refill.mjs';
+import {test} from 'node:test';import assert from 'node:assert/strict';import {decide,deliveryAlerts} from './refill.mjs';
 const row={key:'test-only',channelId:'synthetic-test-channel',caption:'Synthetic fixture - automated tests only',dueAt:'2026-12-10T16:00:00Z',slideCount:6};
 const draft={id:'synthetic-test-draft',channelId:row.channelId,text:row.caption,status:'draft',dueAt:null,assets:Array.from({length:6},(_,i)=>({id:'test-'+i,source:'https://example.invalid/test-only'}))};const now=Date.parse('2026-11-08T00:00:00Z');
 test('full free queue reserves no additional dates',()=>{const full=Array.from({length:10},(_,i)=>({...draft,id:'test-'+i,text:'Other synthetic test post',status:'scheduled',dueAt:'2026-11-10T16:00:00Z'}));assert.equal(decide([row],[draft,...full],now).actions.length,0)});
@@ -11,3 +11,7 @@ test('past dates are never published as catch-up posts',()=>{assert.equal(decide
 test('a verified existing draft can enter an available slot at its exact planned time',()=>{assert.equal(decide([row],[draft],now).actions.length,1)});
 test('a draft copy beside an already scheduled post never creates a second scheduled copy',()=>{let d=decide([row],[draft,{...draft,id:'synthetic-accepted',status:'scheduled',dueAt:row.dueAt}],now);assert.equal(d.actions.length,0)});
 test('BOM and editor whitespace do not turn an existing accepted post into missing content',()=>{let d=decide([row],[{...draft,text:'\uFEFF'+row.caption.replace(/ /g,'\n\n'),status:'scheduled',dueAt:row.dueAt}],now);assert.equal(d.actions.length,0);assert.deepEqual(d.errors,[])});
+
+test('delivery failures in the initial queue are detected even outside the refill plan',()=>{assert.equal(deliveryAlerts([{id:'initial-test-post',channelId:'synthetic',status:'error',dueAt:'2026-11-10T16:00:00Z'}],'2026-11-10','2027-01-11',now).length,1)});
+test('unrelated historical failures do not trigger this campaign',()=>{assert.deepEqual(deliveryAlerts([{id:'historical-test',channelId:'synthetic',status:'error',dueAt:'2026-10-01'}],'2026-11-10','2027-01-11',now),[])});
+test('a future scheduled post is healthy, while a delivery six hours overdue needs attention',()=>{let p={id:'overdue-test',channelId:'synthetic',status:'sending',dueAt:'2026-11-10T16:00:00Z'};assert.equal(deliveryAlerts([p],'2026-11-10','2027-01-11',Date.parse('2026-11-10T23:00:00Z')).length,1);assert.equal(deliveryAlerts([p],'2026-11-10','2027-01-11',now).length,0)});

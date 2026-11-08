@@ -34,6 +34,9 @@ export function decide(rows,posts,now=Date.now()) {
  }
  return {actions,errors};
 }
+export function deliveryAlerts(posts,from,until,now=Date.now()) {
+ return posts.filter(p=>p.dueAt&&instant(p.dueAt)>=instant(from)&&instant(p.dueAt)<=instant(until)).flatMap(p=>p.status==='error'?[`Provider error for ${p.channelId}/${p.id}; check the native profile before retry.`]:['scheduled','sending'].includes(p.status)&&instant(p.dueAt)<now-6*3600000?[`Overdue delivery for ${p.channelId}/${p.id}; verify provider and native state.`]:[]);
+}
 async function main(){
  const apply=process.argv.includes('--apply');
  const key=process.env.BUFFER_API_KEY;
@@ -58,7 +61,7 @@ async function main(){
   const data=(await gql(`query($input:PostsInput!,$after:String){posts(input:$input,first:100,after:$after){edges{node{${FIELDS}}}pageInfo{hasNextPage endCursor}}}`,{input:{organizationId:organization.id,filter:{channelIds}},after})).posts;
   all.push(...data.edges.map(e=>e.node));if(!data.pageInfo.hasNextPage)break;after=data.pageInfo.endCursor;if(page===9)throw Error('Pagination incomplete; stopped.');
  }
- const {actions,errors}=decide(plan.posts.filter(p=>!unavailable.includes(p.channelId)),all);for(const id of unavailable)errors.push(`Channel ${id} is disconnected or paused; independent channel continues.`);
+ const {actions,errors}=decide(plan.posts.filter(p=>!unavailable.includes(p.channelId)),all);errors.push(...deliveryAlerts(all,plan.monitorStart,plan.stopAfter));for(const id of unavailable)errors.push(`Channel ${id} is disconnected or paused; independent channel continues.`);
  const missingPreparation=plan.posts.filter(row=>!all.some(p=>p.channelId===row.channelId&&normalize(p.text)===normalize(row.caption))).map(r=>r.key);
  console.log(JSON.stringify({mode:apply?'apply':'read-only',existing:all.length,missingPreparation,availableActions:actions.map(a=>({key:a.row.key,dueAt:a.row.dueAt})),attention:errors},null,2));
  for(const {row,post} of actions){

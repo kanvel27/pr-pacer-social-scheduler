@@ -1,7 +1,7 @@
 {
   "accountEmailHash": "89028f0a3a6f731275001a5fb5424756ea265ccb680d0e05ed4b93b1c4006c34",
   "timezone": "America/Chicago",
-  "stopAfter": "2027-01-09T00:00:00-06:00",
+  "stopAfter": "2027-01-11T00:00:00-06:00",
   "posts": [
     {
       "key": "month01-tiktok-11",
@@ -1324,5 +1324,6 @@
         "Download PR Pacer Build a plan around your goal."
       ]
     }
-  ]
+  ],
+  "monitorStart": "2026-11-10T00:00:00-06:00"
 }
