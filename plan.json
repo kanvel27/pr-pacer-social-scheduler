@@ -1,7 +1,7 @@
 {
   "accountEmailHash": "89028f0a3a6f731275001a5fb5424756ea265ccb680d0e05ed4b93b1c4006c34",
   "timezone": "America/Chicago",
-  "stopAfter": "2027-01-14T00:00:00-06:00",
+  "stopAfter": "2027-01-20T00:00:00-06:00",
   "posts": [
     {
       "key": "month01-tiktok-11",
@@ -1508,6 +1508,58 @@
         "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0f679d69fad969e69c041",
         "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0f67960a11ea37702de89",
         "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0f679e10e0d17f0d85e58"
+      ]
+    },
+    {
+      "key": "gear-tiktok-01",
+      "channelId": "6aef8435e29c69a17198fa66",
+      "dueAt": "2027-01-15T18:00:00-06:00",
+      "caption": "$300 carbon shoes. 10:30 pace. Wasted money?\n\n10:30 per mile is not an automatic disqualification. A small crossover trial found an economy benefit from the tested supershoe across slower running speeds.\n\nWhether that benefit is worth the money is your decision. There is no pace-based admission ticket.\n\nWould you buy them at this pace—or spend the money elsewhere?\n\nPhoto: On Cloudboom Echo 3, © On.\n\nSources: https://link.springer.com/article/10.1186/s40798-026-00977-3\n\nDownload PR Pacer at prpacer.com.\n\n#PRPacer #CarbonPlatedShoes #SuperShoes #RunningShoes #RunnerTok",
+      "slideCount": 7,
+      "altText": [
+        "$300 carbon shoes. 10:30 pace. Wasted money?",
+        "10:30 per mile is about 9.2 km/h. A 2026 crossover study tested 14 runners at 7.5, 9.0, 10.5 and 12.0 km/h. The 9.0 km/h stage is about 10:44 per mile—close to the pace in the hook.",
+        "The tested supershoe still saved oxygen. Across the tested speeds, the On Cloudboom Echo 3 improved running economy by about 2.5% versus the Cloudrunner 2. Researchers detected no speed-dependent difference in the shoe benefit.",
+        "That does not make the plate magic. These were complete shoes with different foam, geometry and weight. The comparison cannot isolate the carbon plate, and one model comparison does not rank every supershoe.",
+        "“Can help” and “worth $300” are different questions. This was a small, short treadmill study. It did not test a $300 spending decision or guarantee an outdoor race result. The exact 10:30/mile pace was not a separate test stage.",
+        "You don’t need to earn the shoe with a faster pace. Our take: judge fit, comfort, stability and the benefit you value at your actual pace. Buy it if it works for you and the cost makes sense. What pace supposedly earns a carbon shoe?",
+        "Download PR Pacer Build a plan around your goal."
+      ],
+      "postId": "6af0fa08d9342e9dbc40c4a7",
+      "expectedSources": [
+        "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0fa070d4e420a892190ee",
+        "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0fa07477bce5ca9f5e2d0",
+        "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0fa072caa5edbd447def6",
+        "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0fa0760a11ea37702eaa9",
+        "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0fa07fd257b4ec2b4d7df",
+        "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0fa072caa5edbd447defd",
+        "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0fa07fd257b4ec2b4d7d8"
+      ]
+    },
+    {
+      "key": "gear-tiktok-02",
+      "channelId": "6aef8435e29c69a17198fa66",
+      "dueAt": "2027-01-17T18:00:00-06:00",
+      "caption": "What’s the big deal with bicarb—and why are elites using it?\n\nIt is a buffer, not a carb. The appeal is a possible edge when the effort gets very hard. The catch: benefits depend on the event and protocol, and your gut may object.\n\nContinuous-running evidence is mixed: a review found a negligible adjusted average benefit, while a newer small 10K trial reported an improvement. A separate running trial found better gut tolerance with hydrogel but no faster 800 m.\n\nWould you chase the marginal gain—or keep your race-day routine simple?\n\nSources: https://pmc.ncbi.nlm.nih.gov/articles/PMC8427947/ https://pmc.ncbi.nlm.nih.gov/articles/PMC12302384/ https://doi.org/10.1123/ijsnem.2026-0041 https://link.springer.com/article/10.1186/s44410-026-00027-9\n\nDownload PR Pacer at prpacer.com.\n\n#PRPacer #SodiumBicarbonate #RunningNutrition #SportsScience #RunnerTok\n\nAI-generated editorial illustration; not a study participant.",
+      "slideCount": 7,
+      "altText": [
+        "What’s the big deal with bicarb—and why are elites using it?",
+        "Not carbs. Bicarb. Sodium bicarbonate raises the blood’s buffering capacity. That can help manage the hydrogen-ion load associated with very hard exercise. It is not another carbohydrate fuel.",
+        "The appeal: keep producing hard efforts. The ISSN position stand places the clearest evidence in high-intensity efforts lasting roughly 30 seconds to 12 minutes. At elite margins, a small benefit can matter. That does not mean every elite uses it.",
+        "The running results are mixed. A review of 11 continuous-running trials found negligible average benefit after adjustments. A newer trial in 21 recreational female runners reported a roughly 32-second average 10K improvement under its specific meal-and-supplement protocol.",
+        "Your stomach gets a vote. In a 15-runner trial, bicarbonate capsules caused more gut symptoms than placebo. The hydrogel condition did not—but neither bicarbonate version improved the 800 m time trial after intervals.",
+        "Copying an elite protocol is not a race plan. Match the evidence to your event and your tolerance. If considering it, work with a qualified sports dietitian or clinician; the sodium load and gut effects matter. Race morning is a bad first experiment.",
+        "Download PR Pacer Build a plan around your goal."
+      ],
+      "postId": "6af0fa0c860364db8093bcf8",
+      "expectedSources": [
+        "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0fa0a477bce5ca9f5e2e3",
+        "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0fa0a2caa5edbd447df1b",
+        "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0fa0ae10e0d17f0d86b27",
+        "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0fa0ad69fad969e69ce06",
+        "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0fa0ad69fad969e69ce0d",
+        "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0fa0a0d4e420a8921911c",
+        "https://buffer-media-uploads.s3.amazonaws.com/6aee4182070660bf3c4bddd4/6af0fa0a60a11ea37702eace"
       ]
     }
   ],
