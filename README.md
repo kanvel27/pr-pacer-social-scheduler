@@ -1,19 +1,23 @@
 # PR Pacer free hosted refill
 
-Prepared locally; not deployed or connected yet. The existing local Codex refill remains the fallback until a hosted run has been verified.
+Active at https://github.com/kanvel27/pr-pacer-social-scheduler . The initial hosted run succeeded on November 8, 2026 and scheduled five real, approved Instagram carousels for December 21–25, preserving all six ordered images, captions and automatic publishing. Provider readback independently confirmed those dates.
 
 This worker schedules only existing, approved Buffer drafts. Its dated plan covers 50 TikTok drafts (November 20–January 8 at 6 PM America/Chicago) and eleven Instagram drafts (December 21–31 at 10 AM). It excludes every date owned by Metricool. It never creates a post, retries a failed publication, changes slide order, or publishes a missed post as catch-up content.
 
-Proposed destination: a dedicated public repository, `kanvel27/pr-pacer-social-scheduler`. Only this worker, its synthetic automated tests, the workflow, and the public promotional captions/dates would be uploaded. No app source, user records, account email, or credentials belong in repository files. A new PR Pacer Buffer API key would be stored only in GitHub's encrypted repository secret `BUFFER_API_KEY`.
+The public repository contains only this worker, its explicitly synthetic automated tests, workflow, and public promotional captions/dates with provider post/media identifiers. No app source, user records, account email, or credentials belong in repository files. The owner-approved PR Pacer Buffer key is stored in GitHub's encrypted repository secret `BUFFER_API_KEY`. It has only `account:read`, `posts:read` and `posts:write`; it expires February 6, 2027.
 
-The workflow uses a standard public-repository Ubuntu runner, which GitHub documents as free. It does not use paid services, artifacts, caches, or a private-repository runner allowance. It runs twice daily, serially, at 13:17 and 19:17 UTC. The fixed publication dates are in Central time. The campaign stops adding posts after January 8. GitHub scheduled runs can be delayed; Buffer holds the next ten accepted posts per channel in advance.
+The workflow uses a standard public-repository Ubuntu runner, which GitHub documents as free. It does not use paid services, artifacts, caches, or a private-repository runner allowance. It runs twice daily, serially, at 13:17 and 19:17 UTC (7:17 AM and 1:17 PM Central during this campaign). The fixed publication dates are in Central time. The campaign stops adding posts after January 8. GitHub scheduled runs can be delayed; Buffer holds the next ten accepted posts per channel in advance.
 
-Ten synthetic operational tests currently pass. Actual authenticated API validation is pending creation of the owner-approved key. The first authenticated run must be read-only (`node refill.mjs`), verify the dedicated account/channels and all draft matches, then qualify `--apply` with its subsequent provider readback. Existing queues are full today, so the initial real run may legitimately schedule nothing. This is not evidence that a future post has published.
+Ten synthetic operational tests pass. Real qualification includes authenticated account/channel/draft reads, preserving five existing Instagram posts during migration to Metricool, a full TikTok payload accepted on an existing approved draft (which remained a draft), and the hosted scheduling/readback of five real Instagram posts. A scheduled queue entry is not evidence that a future post has published.
 
-## Deployment after credential approval
+## Maintenance state
 
-1. Create the dedicated public repository and upload only this directory.
-2. Generate the key in the dedicated Buffer account and transfer it directly to the encrypted repository secret, without printing or committing it.
-3. Run the read-only verification and inspect results before enabling the apply schedule.
-4. Trigger one hosted run, verify account identity, queue limits and exact accepted dates.
-5. Replace the local refill only after the hosted dependency has been verified. Preserve provider incidents as actionable failures; never auto-retry an uncertain TikTok publication.
+Forty-nine campaign posts are currently pinned to existing draft/post IDs and ordered media URLs. The remaining twelve TikTok image packs are already generated locally; their upload completion is pending Buffer's temporary 300-image/hour limit. Preparation status is printed on every run. A missing future draft is never silently recreated by this worker. Media preparation is separate from queue scheduling.
+
+The owner-facing local receipt lives outside this public repository. The old local refill must stop scheduling once the cloud worker is qualified; any remaining one-time image upload maintenance is separate. Provider errors and uncertain TikTok results require native-profile verification before any retry.
+
+## Commands
+
+- `node --test refill.test.mjs`: synthetic safeguards only.
+- `BUFFER_API_KEY=... node refill.mjs`: authenticated read-only verification; keep secrets out of shell history and logs.
+- `BUFFER_API_KEY=... node refill.mjs --apply`: schedule matching approved existing drafts into available free queue slots, then read back exact dates, captions and media order.
