@@ -63,6 +63,8 @@ async function main(){
  }
  const {actions,errors}=decide(plan.posts.filter(p=>!unavailable.includes(p.channelId)),all);errors.push(...deliveryAlerts(all,plan.monitorStart,plan.stopAfter));for(const id of unavailable)errors.push(`Channel ${id} is disconnected or paused; independent channel continues.`);
  const missingPreparation=plan.posts.filter(row=>!all.some(p=>p.channelId===row.channelId&&normalize(p.text)===normalize(row.caption))).map(r=>r.key);
+ const changedPreparation=plan.posts.filter(row=>{const p=all.find(p=>p.channelId===row.channelId&&normalize(p.text)===normalize(row.caption));return p&&((row.postId&&p.id!==row.postId)||p.assets.length!==row.slideCount||(row.expectedSources&&JSON.stringify(p.assets.map(a=>a.source))!==JSON.stringify(row.expectedSources)));}).map(r=>r.key);
+ errors.push(...missingPreparation.map(k=>`${k}: approved draft is missing`),...changedPreparation.map(k=>`${k}: approved draft identity or ordered images changed`));
  console.log(JSON.stringify({mode:apply?'apply':'read-only',existing:all.length,missingPreparation,availableActions:actions.map(a=>({key:a.row.key,dueAt:a.row.dueAt})),attention:errors},null,2));
  for(const {row,post} of actions){
   if(!apply)continue;
