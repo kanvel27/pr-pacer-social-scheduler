@@ -1,5 +1,8 @@
 name: Refill approved PR Pacer posts
 on:
+  push:
+    branches: [main]
+    paths: ['plan.json', '.github/workflows/refill.yml']
   schedule:
     - cron: '17 13,19 * * *'
   workflow_dispatch:
