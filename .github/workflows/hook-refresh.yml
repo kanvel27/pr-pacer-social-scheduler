@@ -1,0 +1,23 @@
+name: Refresh approved PR Pacer hooks
+on:
+  push:
+    branches: [main]
+    paths: ['hook-refresh.mjs', 'hook-refresh.json', '.github/workflows/hook-refresh.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pr-pacer-buffer-refill
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Update existing approved carousel openings
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+        run: node hook-refresh.mjs
