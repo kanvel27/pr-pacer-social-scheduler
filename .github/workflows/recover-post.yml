@@ -1,8 +1,8 @@
-name: Refresh approved PR Pacer hooks
+name: Recover verified missing PR Pacer TikTok
 on:
   push:
     branches: [main]
-    paths: ['hook-refresh.mjs', 'hook-refresh.json', '.github/workflows/hook-refresh.yml']
+    paths: ['recover-post.mjs', '.github/workflows/recover-post.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -10,14 +10,14 @@ concurrency:
   group: pr-pacer-buffer-refill
   cancel-in-progress: false
 jobs:
-  refresh:
+  recover:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 4
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           persist-credentials: false
-      - name: Update existing approved carousel openings
+      - name: Retry the reconciled missing post once
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
-        run: node hook-refresh.mjs
+        run: node recover-post.mjs
