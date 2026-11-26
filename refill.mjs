@@ -7,6 +7,14 @@ const ROOT=fileURLToPath(new URL('.',import.meta.url));
 export const normalize=s=>s.replace(/[\uFEFF\u200B]/g,'').replace(/\s+/g,' ').trim();
 const instant=s=>new Date(s).getTime();
 const FIELDS='id channelId channelService text status dueAt schedulingType assets { id source } metadata { ... on TiktokPostMetadata { title isAiGenerated } ... on InstagramPostMetadata { type isAiGenerated } }';
+export async function sameOrderedMedia(expected, actual, digest) {
+ if (expected.length !== actual.length) return false;
+ for (let index = 0; index < expected.length; index++) {
+  if (expected[index] === actual[index]) continue;
+  if (await digest(expected[index]) !== await digest(actual[index])) return false;
+ }
+ return true;
+}
 export function decide(rows,posts,now=Date.now()) {
  const actions=[],errors=[];
  const occupied=new Map();
@@ -61,11 +69,36 @@ async function main(){
   const data=(await gql(`query($input:PostsInput!,$after:String){posts(input:$input,first:100,after:$after){edges{node{${FIELDS}}}pageInfo{hasNextPage endCursor}}}`,{input:{organizationId:organization.id,filter:{channelIds}},after})).posts;
   all.push(...data.edges.map(e=>e.node));if(!data.pageInfo.hasNextPage)break;after=data.pageInfo.endCursor;if(page===9)throw Error('Pagination incomplete; stopped.');
  }
+ const mediaDigests = new Map();
+ async function mediaDigest(url) {
+  if (!mediaDigests.has(url)) {
+   const response = await fetch(url, {signal: AbortSignal.timeout(30000)});
+   if (!response.ok) throw Error('Media HTTP ' + response.status);
+   const bytes = Buffer.from(await response.arrayBuffer());
+   mediaDigests.set(url, createHash('sha256').update(bytes).digest('hex'));
+  }
+  return mediaDigests.get(url);
+ }
+ const relocatedMedia = [], unverifiedMedia = [];
+ for (const row of plan.posts) {
+  const post = all.find(p => p.id === row.postId && p.channelId === row.channelId && normalize(p.text) === normalize(row.caption));
+  if (!post || !row.expectedSources) continue;
+  const actualSources = post.assets.map(asset => asset.source);
+  if (JSON.stringify(actualSources) === JSON.stringify(row.expectedSources)) continue;
+  try {
+   if (await sameOrderedMedia(row.expectedSources, actualSources, mediaDigest)) {
+    row.expectedSources = actualSources;
+    relocatedMedia.push(row.key);
+   }
+  } catch {
+   unverifiedMedia.push(row.key);
+  }
+ }
  const {actions,errors}=decide(plan.posts.filter(p=>!unavailable.includes(p.channelId)),all);errors.push(...deliveryAlerts(all,plan.monitorStart,plan.stopAfter));for(const id of unavailable)errors.push(`Channel ${id} is disconnected or paused; independent channel continues.`);
  const missingPreparation=plan.posts.filter(row=>!all.some(p=>p.channelId===row.channelId&&normalize(p.text)===normalize(row.caption))).map(r=>r.key);
  const changedPreparation=plan.posts.filter(row=>{const p=all.find(p=>p.channelId===row.channelId&&normalize(p.text)===normalize(row.caption));return p&&((row.postId&&p.id!==row.postId)||p.assets.length!==row.slideCount||(row.expectedSources&&JSON.stringify(p.assets.map(a=>a.source))!==JSON.stringify(row.expectedSources)));}).map(r=>r.key);
  errors.push(...missingPreparation.map(k=>`${k}: approved draft is missing`),...changedPreparation.map(k=>`${k}: approved draft identity or ordered images changed`));
- console.log(JSON.stringify({mode:apply?'apply':'read-only',existing:all.length,missingPreparation,availableActions:actions.map(a=>({key:a.row.key,dueAt:a.row.dueAt})),attention:errors},null,2));
+ console.log(JSON.stringify({mode:apply?'apply':'read-only',existing:all.length,missingPreparation,relocatedMedia,unverifiedMedia,availableActions:actions.map(a=>({key:a.row.key,dueAt:a.row.dueAt})),attention:errors},null,2));
  for(const {row,post} of actions){
   if(!apply)continue;
   const metadata=post.channelService==='instagram'?{instagram:{type:'post',shouldShareToFeed:true,isAiGenerated:post.metadata.isAiGenerated}}:{tiktok:{title:post.metadata.title,isAiGenerated:post.metadata.isAiGenerated}};
